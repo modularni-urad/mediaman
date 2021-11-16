@@ -1,11 +1,13 @@
 import express from 'express'
 import path from 'path'
 import { attachPaginate } from 'knex-paginate'
-import initErrorHandlers from 'modularni-urad-utils/error_handlers'
-import { 
-  required, requireMembership, isMember, getUID 
-} from 'modularni-urad-utils/auth'
-import initDB from 'modularni-urad-utils/db'
+import {
+  auth,
+  initErrorHandlers,
+  initConfigManager,
+  CORSconfigCallback,
+  createLoadOrgConfigMW
+} from 'modularni-urad-utils'
 import initRoutes from './api/routes.js'
 
 export default async function init (mocks = null) {
@@ -14,15 +16,20 @@ export default async function init (mocks = null) {
     ? await mocks.dbinit(migrationsDir)
     : await initDB(migrationsDir)
   attachPaginate()
-  
-  const ctx = {
-    express, knex,
-    auth: { required, requireMembership, isMember, getUID },
-    JSONBodyParser: express.json()
-  }
-  const app = express()
+  await initConfigManager(process.env.CONFIG_FOLDER)
 
-  app.use(initRoutes(ctx))
+  const app = express()
+  process.env.NODE_ENV !== 'test' && app.use(cors(CORSconfigCallback))
+
+  const ctx = {
+    express, knex, auth, JSONBodyParser: express.json()
+  }
+  const api = initRoutes(ctx)
+
+  const loadOrgConfig = createLoadOrgConfigMW(req => {
+    return req.params.domain
+  })
+  app.use('/:domain/', loadOrgConfig, api)
 
   initErrorHandlers(app) // ERROR HANDLING
   return app

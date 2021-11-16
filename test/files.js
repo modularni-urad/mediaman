@@ -6,10 +6,10 @@ import _ from 'underscore'
 
 module.exports = (g) => {
   //
-  const r = chai.request(g.baseurl)
+  const r = chai.request(g.baseurl + '/api.domain1.cz')
 
   const p = {
-    filename: 'pok1',
+    filename: 'pok1.jpg',
     nazev: 'proj1',
     popis: 'popis proj1',
     tags: 'zivpros',
