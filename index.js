@@ -3,6 +3,7 @@ import path from 'path'
 import { attachPaginate } from 'knex-paginate'
 import {
   auth,
+  initDB,
   initErrorHandlers,
   initConfigManager,
   CORSconfigCallback,
