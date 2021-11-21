@@ -18,6 +18,12 @@ export default function (ctx) {
     }).catch(next)
   })
 
+  app.post('/upload/:fname', auth.session, auth.required, JSONBodyParser, (req, res, next) => {
+    MWare.upload(req.params.fname, req.body, req.orgdomain).then(result => {
+      res.status(201).json(result)
+    }).catch(next)
+  })
+
   app.put('/:id', auth.session, auth.required, JSONBodyParser, (req, res, next) => {
     MWare.update(req.params.id, req.body, req.orgconfig.orgid, req.user, knex)
     .then(result => {

@@ -24,11 +24,12 @@ export default async function init (mocks = null) {
   process.env.NODE_ENV !== 'test' && app.use(cors(CORSconfigCallback))
 
   const ctx = {
-    express, knex, auth, JSONBodyParser: express.json()
+    express, knex, auth, JSONBodyParser: express.json({limit: '50mb'})
   }
   const api = initRoutes(ctx)
 
   const loadOrgConfig = createLoadOrgConfigMW(req => {
+    req.orgdomain = req.params.domain
     return req.params.domain
   })
   app.use('/:domain/', loadOrgConfig, api)

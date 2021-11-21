@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import _ from 'underscore'
 import { APIError } from 'modularni-urad-utils'
 import { TABLE_NAMES, MULTITENANT } from '../consts'
@@ -7,7 +9,7 @@ const conf = {
   editables: ['filename', 'nazev', 'tags', 'popis', 'ctype', 'size']
 }
 
-export default { create, list, update }
+export default { create, list, update, upload }
   
 async function create (body, orgid, user, knex) {
   try {
@@ -18,6 +20,18 @@ async function create (body, orgid, user, knex) {
   } catch(err) {
     throw new APIError(400, err.toString())
   }
+}
+
+const DATA_FOLDER = path.resolve(process.env.DATA_FOLDER || './.data')
+
+async function upload (name, body, domain) {
+  const fileName = path.join(DATA_FOLDER, domain, name)
+  try {
+    await fs.promises.mkdir(path.dirname(fileName))
+  } catch (e) {
+
+  }
+  return fs.promises.writeFile(fileName, Buffer.from(body.content, 'base64'))
 }
 
 async function update (filename, data, orgid, user, knex) {
