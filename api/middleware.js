@@ -1,50 +1,41 @@
 import fs from 'fs'
 import path from 'path'
-import _ from 'underscore'
-import { APIError } from 'modularni-urad-utils'
-import { TABLE_NAMES, MULTITENANT } from '../consts'
-import entity from 'entity-api-base'
+import { TABLE_NAMES } from '../consts'
 const conf = {
   tablename: TABLE_NAMES.FILES,
-  editables: ['filename', 'nazev', 'tags', 'popis', 'ctype', 'size']
+  editables: ['filename', 'nazev', 'tags', 'popis', 'ctype', 'size'],
+  idattr: 'filename'
 }
 
-export default { create, list, update, upload }
+export default (ctx) => {
+  const { knex, ErrorClass } = ctx
+  const _ = ctx.require('underscore')
+  const entityMWBase = ctx.require('entity-api-base').default
+  const entityMW = entityMWBase(conf, knex, ErrorClass)
+  const DATA_FOLDER = path.resolve(process.env.DATA_FOLDER || './.data')
+
+  return { create, list, update, upload }
   
-async function create (body, orgid, user, knex) {
-  try {
+  async function create (body, user, schema) {
     Object.assign(body, { owner: user.id })
-    MULTITENANT && Object.assign(body, { orgid })
-    const newitem = await entity.create(body, conf, knex)
-    return newitem
-  } catch(err) {
-    throw new APIError(400, err.toString())
+    return entityMW.create(body, schema)
   }
-}
 
-const DATA_FOLDER = path.resolve(process.env.DATA_FOLDER || './.data')
+  async function upload (name, body, domain) {
+    const fileName = path.join(DATA_FOLDER, domain, name)
+    try {
+      await fs.promises.mkdir(path.dirname(fileName))
+    } catch (e) {
 
-async function upload (name, body, domain) {
-  const fileName = path.join(DATA_FOLDER, domain, name)
-  try {
-    await fs.promises.mkdir(path.dirname(fileName))
-  } catch (e) {
-
+    }
+    return fs.promises.writeFile(fileName, Buffer.from(body.content, 'base64'))
   }
-  return fs.promises.writeFile(fileName, Buffer.from(body.content, 'base64'))
-}
 
-async function update (filename, data, orgid, user, knex) {
-  try {
-    const cond = MULTITENANT ? { orgid, filename } : { filename }
-    data = _.pick(data, conf.editables)
-    return await knex(conf.tablename).where(cond).update(data).returning('*')
-  } catch(err) {
-    throw new APIError(400, err.toString())
+  async function update (filename, data, user, schema) {
+    return entityMW.update(filename, data, schema)
   }
-}
 
-async function list (query, orgid, knex) {
-  MULTITENANT && Object.assign(query.filter, { orgid })
-  return entity.list(query, conf, knex)
+  async function list (query, schema) {
+    return entityMW.list(query, schema)
+  }
 }

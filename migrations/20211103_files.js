@@ -1,10 +1,12 @@
-import _ from 'underscore'
-import { MULTITENANT, TABLE_NAMES } from '../consts'
+import { TABLE_NAMES } from '../consts'
 
 exports.up = (knex, Promise) => {
-  return knex.schema.createTable(TABLE_NAMES.FILES, (table) => {
-    table.string('filename').notNullable()
-    MULTITENANT && table.integer('orgid').notNullable()
+  const builder = process.env.CUSTOM_MIGRATION_SCHEMA
+    ? knex.schema.withSchema(process.env.CUSTOM_MIGRATION_SCHEMA)
+    : knex.schema
+
+  return builder.createTable(TABLE_NAMES.FILES, (table) => {
+    table.string('filename').notNullable().primary()
     table.string('nazev', 64).notNullable()
     table.string('tags', 64)
     table.string('popis', 256)
@@ -12,13 +14,15 @@ exports.up = (knex, Promise) => {
     table.integer('size').notNullable()
     table.string('owner', 64).notNullable()
     table.timestamp('created').notNullable().defaultTo(knex.fn.now())
-    
-    table.primary(MULTITENANT ? ['filename', 'orgid'] : 'filename')
   })
 }
 
 exports.down = (knex, Promise) => {
-  return knex.schema.dropTable(TABLE_NAMES.FILES)
+  const builder = process.env.CUSTOM_MIGRATION_SCHEMA
+    ? knex.schema.withSchema(process.env.CUSTOM_MIGRATION_SCHEMA)
+    : knex.schema
+
+  return builder.dropTable(TABLE_NAMES.FILES)
 }
 
 

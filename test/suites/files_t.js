@@ -1,12 +1,6 @@
-/* global describe it */
-const chai = require('chai')
-const assert = chai.assert
-chai.should()
-import _ from 'underscore'
-
 module.exports = (g) => {
-  //
-  const r = chai.request(g.baseurl + '/api.domain1.cz')
+  const _ = g.require('underscore')
+  const r = g.chai.request(g.baseurl)
 
   const p = {
     filename: 'pok1.jpg',
