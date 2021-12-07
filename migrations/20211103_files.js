@@ -10,7 +10,7 @@ exports.up = (knex, Promise) => {
     table.string('nazev', 64).notNullable()
     table.string('tags', 64)
     table.string('popis', 256)
-    table.string('ctype', 16).notNullable()
+    table.string('ctype', 128).notNullable()
     table.integer('size').notNullable()
     table.string('owner', 64).notNullable()
     table.timestamp('created').notNullable().defaultTo(knex.fn.now())
