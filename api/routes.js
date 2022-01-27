@@ -1,5 +1,4 @@
 import MWare from './middleware'
-import _ from 'underscore'
 
 export default function (ctx) {
   const { auth, express } = ctx
@@ -20,8 +19,9 @@ export default function (ctx) {
     }).catch(next)
   })
 
-  app.post('/upload/:fname', auth.session, auth.required, bodyParser, (req, res, next) => {
-    MW.upload(req.params.fname, req.body, req.tenantid).then(result => {
+  app.post('/upload/:fname*', auth.session, auth.required, bodyParser, (req, res, next) => {
+    const fname = `${req.params.fname}${req.params[0]}`
+    MW.upload(fname, req.body, req.tenantid).then(result => {
       res.status(201).json(result)
     }).catch(next)
   })

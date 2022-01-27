@@ -1,6 +1,11 @@
 import fs from 'fs'
 import path from 'path'
+import entityMWBase from 'entity-api-base'
+import _ from 'underscore'
+import mkdirp from 'mkdirp'
 import { TABLE_NAMES } from '../consts'
+
+const DATA_FOLDER = path.resolve(process.env.DATA_FOLDER || './.data')
 const conf = {
   tablename: TABLE_NAMES.FILES,
   editables: ['filename', 'nazev', 'tags', 'popis', 'ctype', 'size'],
@@ -9,10 +14,7 @@ const conf = {
 
 export default (ctx) => {
   const { knex, ErrorClass } = ctx
-  const _ = ctx.require('underscore')
-  const entityMWBase = ctx.require('entity-api-base').default
   const entityMW = entityMWBase(conf, knex, ErrorClass)
-  const DATA_FOLDER = path.resolve(process.env.DATA_FOLDER || './.data')
 
   return { create, list, update, upload }
   
@@ -22,13 +24,16 @@ export default (ctx) => {
   }
 
   async function upload (name, body, domain) {
-    const fileName = path.join(DATA_FOLDER, domain, name)
+    if (name.indexOf('..') >= 0) throw new ErrorClass(400, 'wrong filename')
+    const fileName = path.basename(name)
+    const dirName = path.join(DATA_FOLDER, domain || '', path.dirname(name))
     try {
-      await fs.promises.mkdir(path.dirname(fileName))
+      await mkdirp(dirName)
     } catch (e) {
-
+      throw new ErrorClass(400, e.toString())
     }
-    return fs.promises.writeFile(fileName, Buffer.from(body.content, 'base64'))
+    const data = Buffer.from(body.content, 'base64')
+    return fs.promises.writeFile(path.join(dirName, fileName), data)
   }
 
   async function update (filename, data, user, schema) {

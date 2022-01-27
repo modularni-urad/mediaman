@@ -1,15 +1,18 @@
+import _ from 'underscore'
+
 module.exports = (g) => {
-  const _ = g.require('underscore')
   const r = g.chai.request(g.baseurl)
 
   const p = {
-    filename: 'pok1.jpg',
+    filename: 'pok1.md',
     nazev: 'proj1',
     popis: 'popis proj1',
     tags: 'zivpros',
     ctype: 'text',
     size: 123
   }
+  const content = 'hello world'
+  const encContent = Buffer.from(content, 'utf-8').toString('base64')
 
   return describe('files', () => {
     //
@@ -51,5 +54,14 @@ module.exports = (g) => {
       res.body[0].nazev.should.eql('pok1changed')
       res.should.have.status(200)
     })
+
+    it('shall upload', async () => {
+      const res = await r.post(`/upload/${p.filename}`).send({
+        content: encContent
+      }).set('Authorization', 'Bearer f')
+      res.should.have.status(201)
+
+    })
+
   })
 }
