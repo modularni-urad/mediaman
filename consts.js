@@ -1,9 +1,10 @@
 export const MULTITENANT = process.env.MULTITENANT || true
 
 export const TABLE_NAMES = {
-  FILES: 'mediafiles'
+  FILES: 'mediafiles',
+  ACL: 'acl'
 }
 
 export const ROLE = {
-  PROJECT_INSERTER: 'project_inserter'
+  ACL_MANAGER: 'acl_manager'
 }

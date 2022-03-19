@@ -7,12 +7,8 @@ module.exports = (g) => {
     filename: 'pok1.md',
     nazev: 'proj1',
     popis: 'popis proj1',
-    tags: 'zivpros',
-    ctype: 'text',
-    size: 123
+    tags: 'zivpros'
   }
-  const content = 'hello world'
-  const encContent = Buffer.from(content, 'utf-8').toString('base64')
 
   return describe('files', () => {
     //
@@ -26,12 +22,6 @@ module.exports = (g) => {
         .set('Authorization', 'Bearer f')
       res.should.have.status(400)
     })
-
-    // it('must not create a new item without appropriate group', async () => {
-    //   const res = await r.post(`/`).send(p)
-    //     .set('Authorization', 'Bearer f')
-    //   res.should.have.status(400)
-    // })
 
     it('shall create a new item pok1', async () => {
       const res = await r.post(`/`).send(p).set('Authorization', 'Bearer f')
@@ -53,14 +43,6 @@ module.exports = (g) => {
       res.body.length.should.eql(1)
       res.body[0].nazev.should.eql('pok1changed')
       res.should.have.status(200)
-    })
-
-    it('shall upload', async () => {
-      const res = await r.post(`/upload/${p.filename}`).send({
-        content: encContent
-      }).set('Authorization', 'Bearer f')
-      res.should.have.status(201)
-
     })
 
   })

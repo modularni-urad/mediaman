@@ -5,15 +5,11 @@ exports.up = (knex, Promise) => {
     ? knex.schema.withSchema(process.env.CUSTOM_MIGRATION_SCHEMA)
     : knex.schema
 
-  return builder.createTable(TABLE_NAMES.FILES, (table) => {
-    table.string('filename').notNullable().primary()
-    table.string('nazev', 64).notNullable()
-    table.string('tags', 64)
-    table.string('popis', 256)
-    table.string('ctype', 128).notNullable().defaultTo('unknown')
-    table.integer('size').notNullable().defaultTo(0)
-    table.string('owner', 64).notNullable()
+  return builder.createTable(TABLE_NAMES.ACL, (table) => {
+    table.string('uid', 64).notNullable().primary()
+    table.string('paths').notNullable()
     table.timestamp('created').notNullable().defaultTo(knex.fn.now())
+    table.unique(['uid'])
   })
 }
 
@@ -22,7 +18,7 @@ exports.down = (knex, Promise) => {
     ? knex.schema.withSchema(process.env.CUSTOM_MIGRATION_SCHEMA)
     : knex.schema
 
-  return builder.dropTable(TABLE_NAMES.FILES)
+  return builder.dropTable(TABLE_NAMES.ACL)
 }
 
 

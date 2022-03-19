@@ -16,7 +16,9 @@ describe('app', () => {
   describe('mediaman API', () => {
     //
     const submodules = [
-      './suites/files_t'
+      './suites/files_t',
+      './suites/acl_t',
+      './suites/upload_t'
     ]
     submodules.map((i) => {
       const subMod = require(i)

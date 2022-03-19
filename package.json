@@ -2,7 +2,7 @@
   "name": "modularni-urad-mediaman",
   "version": "1.1.0",
   "description": "media manager",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "start": "node -r esm server.js",
     "startdbg": "node -r esm --inspect-brk server.js",
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "entity-api-base": "^0.2.0",
+    "jsonwebtoken": "^8.5.1",
     "mkdirp": "^1.0.4",
     "underscore": "^1.13.1"
   },
@@ -31,8 +32,10 @@
     "knex": "^0.95.0",
     "knex-paginate": "^3",
     "mocha": "^8.2.0",
-    "modularni-urad-utils": "^1.5.0",
+    "modularni-urad-utils": "git+https://github.com/modularni-urad/utils.git",
+    "modularni-urad-filestorage": "git+https://github.com/modularni-urad/filestorage.git",
     "sqlite3": "^4.0.4",
-    "temp": "^0.9.4"
+    "temp": "^0.9.4",
+    "tus-js-client": "^2.3.1"
   }
 }
