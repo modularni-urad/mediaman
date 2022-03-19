@@ -24,10 +24,13 @@ module.exports = (g) => {
       tokenRes.should.have.status(200)
       const token = tokenRes.body
       const filename = '/pokus/README.md'
-      await doUpload('../README.md', filename, token, g)
+      const file2upload = path.resolve(path.join(__dirname, '../../README.md'))
+      await doUpload(file2upload, filename, token, g)
+
       const uploadedFile = path.join(process.env.DATA_FOLDER, filename)
-      const content = fs.readFileSync(uploadedFile, 'utf-8')
-      console.log(content)
+      const uploadedContent = fs.readFileSync(uploadedFile, 'utf-8')
+      const origContent = fs.readFileSync(file2upload, 'utf-8')
+      uploadedContent.should.eql(origContent)
     })
 
   })
