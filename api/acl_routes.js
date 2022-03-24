@@ -16,7 +16,7 @@ export default function (ctx) {
 
   app.get('/token', auth.session, bodyParser, (req, res, next) => {
     const paths = TRUSTED_IPS.indexOf(req.ip) >= 0 && req.body && req.body.paths
-    if (!paths && !req.user) return next(ErrorClass(401, 'unauhtorized'))
+    if (!paths && !req.user) return next(new ErrorClass(401, 'unauhtorized'))
     MW.createToken(req.user, paths, req.tenantid).then(result => {
       res.json(result)
     }).catch(next)
