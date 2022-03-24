@@ -7,6 +7,9 @@ Umi i resize obrazku.
 
 Pouze pomocí ENVIRONMENT VARIABLES.
 
+TRUSTED_IPS: comma separated IP addresses, from where token requests can override allowed paths. Requesty od aplikaci (napr. paro), ktere ukladani data do adresaru,
+ktere si ony diktuji.
+
 #### docker-compose
 
 Nebo muzete vyuzit [docker-compose.yml](https://docs.docker.com/compose/environment-variables/).
