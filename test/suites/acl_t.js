@@ -43,5 +43,9 @@ module.exports = (g) => {
       res.body[0].paths.should.eql('pokus/.*,pokus2/settings.yaml')
     })
 
+    it('shall get token as an app', async () => {
+      const res = await r.get(`/acl/token`).send({ paths: ['johoho/'] })
+      res.should.have.status(200)
+    })
   })
 }

@@ -1,7 +1,8 @@
 import MWare from './acl'
+const TRUSTED_IPS = (process.env.TRUSTED_IPS || '').split(',')
 
 export default function (ctx) {
-  const { auth, express } = ctx
+  const { auth, express, ErrorClass } = ctx
   const bodyParser = express.json()
   const MW = MWare(ctx)
   const app = express()
@@ -13,8 +14,10 @@ export default function (ctx) {
     }).catch(next)
   })
 
-  app.get('/token', auth.session, auth.required, (req, res, next) => {
-    MW.createToken(req.user, req.tenantid).then(result => {
+  app.get('/token', auth.session, bodyParser, (req, res, next) => {
+    const paths = TRUSTED_IPS.indexOf(req.ip) >= 0 && req.body && req.body.paths
+    if (!paths && !req.user) return next(ErrorClass(401, 'unauhtorized'))
+    MW.createToken(req.user, paths, req.tenantid).then(result => {
       res.json(result)
     }).catch(next)
   })

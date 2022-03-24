@@ -27,11 +27,14 @@ export default (ctx) => {
     return entityMW.list(query, schema)
   }
 
-  async function createToken (user, schema) {
+  async function _getUserPaths (user, schema) {
     const myAcl = await entityMW.get(user.id, schema)
-    const paths = myAcl.paths.split(',').map(i => {
+    return myAcl.paths.split(',').map(i => {
       return schema ? `/${schema}/${i}` : i
     })
+  }
+  async function createToken (user, desiredPaths, schema) {
+    const paths = desiredPaths || await _getUserPaths(user, schema)
     return jwt.sign({ paths }, process.env.STORAGE_SECRET, { 
       expiresIn: '1h' 
     })

@@ -9,6 +9,7 @@ const SessionServiceMock = require('modularni-urad-utils/test/mocks/sessionServi
 module.exports = (g) => {
   process.env.DATABASE_URL = ':memory:'
   process.env.NODE_ENV = 'test'
+  process.env.TRUSTED_IPS = '127.0.0.1'
   process.env.SESSION_SERVICE_PORT = 24000
   process.env.STORAGE_SERVICE_PORT = 24001
   process.env.SESSION_SERVICE = `http://localhost:${process.env.SESSION_SERVICE_PORT}`
