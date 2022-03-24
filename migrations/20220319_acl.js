@@ -9,7 +9,6 @@ exports.up = (knex, Promise) => {
     table.string('uid', 64).notNullable().primary()
     table.string('paths').notNullable()
     table.timestamp('created').notNullable().defaultTo(knex.fn.now())
-    table.unique(['uid'])
   })
 }
 
