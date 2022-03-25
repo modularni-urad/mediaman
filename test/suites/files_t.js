@@ -9,6 +9,12 @@ module.exports = (g) => {
     popis: 'popis proj1',
     tags: 'zivpros'
   }
+  const p2 = {
+    filename: 'pokus/pok2.md',
+    nazev: 'proj2',
+    popis: 'popis proj2',
+    tags: 'zivpros'
+  }
 
   return describe('files', () => {
     //
@@ -43,6 +49,14 @@ module.exports = (g) => {
       res.body.length.should.eql(1)
       res.body[0].nazev.should.eql('pok1changed')
       res.should.have.status(200)
+    })
+
+    it('shall update filname withsubpath', async () => {
+      const res = await r.post(`/`).send(p2).set('Authorization', 'Bearer f')
+      res.should.have.status(201)
+      const res2 = await r.put(`/${p2.filename}`)
+        .send({ nazev: 'subpath' }).set('Authorization', 'Bearer f')
+      res2.should.have.status(200)
     })
 
   })

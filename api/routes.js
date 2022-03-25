@@ -22,8 +22,9 @@ export default function (ctx) {
     }).catch(next)
   })
 
-  app.put('/:id', auth.session, auth.required, bodyParser, (req, res, next) => {
-    MW.update(req.params.id, req.body, req.user, req.tenantid).then(result => {
+  app.put('/:filename*', auth.session, auth.required, bodyParser, (req, res, next) => {
+    const filename = req.params.filename + req.params[0]
+    MW.update(filename, req.body, req.user, req.tenantid).then(result => {
       res.json(result)
     }).catch(next)
   })
