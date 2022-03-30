@@ -46,6 +46,7 @@ module.exports = (g) => {
     it('shall get token as an app', async () => {
       const res = await r.get(`/acl/token`).send({ paths: ['johoho/'] })
       res.should.have.status(200)
+      console.log(res.body)
     })
   })
 }

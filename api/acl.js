@@ -35,8 +35,9 @@ export default (ctx) => {
   }
   async function createToken (user, desiredPaths, schema) {
     const paths = desiredPaths || await _getUserPaths(user, schema)
-    return jwt.sign({ paths }, process.env.STORAGE_SECRET, { 
+    const token = jwt.sign({ paths }, process.env.STORAGE_SECRET, { 
       expiresIn: '1h' 
     })
+    return { token, path: schema ? `/${schema}` : '/' }
   }
 }
