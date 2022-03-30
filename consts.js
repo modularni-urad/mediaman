@@ -6,5 +6,5 @@ export const TABLE_NAMES = {
 }
 
 export const ROLE = {
-  ACL_MANAGER: 'acl_manager'
+  ACL_MANAGER: 'acl_mans'
 }
