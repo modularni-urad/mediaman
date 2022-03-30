@@ -26,6 +26,7 @@ module.exports = (g) => {
     storagePort: process.env.STORAGE_SERVICE_PORT,
     storageHost: '127.0.0.1'
   })
+  process.env.FILESTORAGE_URL = `http://127.0.0.1:${g.port}/__static`
   g.sessionSrvcMock = SessionServiceMock.default(process.env.SESSION_SERVICE_PORT, g)
   const StorageServer = require('modularni-urad-filestorage')
 
@@ -43,6 +44,8 @@ module.exports = (g) => {
     }
     const mwarez = ApiModule.init(appContext)
     app.use(mwarez)
+
+    app.use('/__static', express.static(process.env.DATA_FOLDER))
 
     app.use((error, req, res, next) => {
       if (error instanceof APIError) {

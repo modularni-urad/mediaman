@@ -29,7 +29,7 @@ module.exports = (g) => {
 
     it('shall update the item pok1', async () => {
       const change = {
-        paths: 'pokus/.*,pokus2/settings.yaml'
+        paths: 'pokus/.*,README.md'
       }
       const res = await r.put(`/acl/${p.uid}`).send(change)
         .set('Authorization', 'Bearer f')
@@ -40,7 +40,7 @@ module.exports = (g) => {
       const res = await r.get(`/acl/`).set('Authorization', 'Bearer f')
       res.should.have.status(200)
       res.body.length.should.eql(1)
-      res.body[0].paths.should.eql('pokus/.*,pokus2/settings.yaml')
+      res.body[0].paths.should.eql('pokus/.*,README.md')
     })
 
     it('shall get token as an app', async () => {

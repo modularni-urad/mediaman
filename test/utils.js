@@ -10,7 +10,6 @@ export async function doUpload (file2upload, filename, token, g) {
       endpoint: `http://${g.storageHost}:${g.storagePort}`,
       metadata: {
         filename: filename,
-        filetype: 'text/plain',
         Bearer: token
       },
       uploadSize: size,

@@ -1,22 +1,32 @@
 import _ from 'underscore'
+import path from 'path'
+import { doUpload } from '../utils'
 
 module.exports = (g) => {
   const r = g.chai.request(g.baseurl)
 
   const p = {
-    filename: 'pok1.md',
+    filename: 'README.md',
     nazev: 'proj1',
     popis: 'popis proj1',
     tags: 'zivpros'
   }
   const p2 = {
-    filename: 'pokus/pok2.md',
+    filename: 'pokus/REAďMě2.md',
     nazev: 'proj2',
     popis: 'popis proj2',
     tags: 'zivpros'
   }
 
   return describe('files', () => {
+
+    before(async() => {
+      const tokenRes = await r.get(`/acl/token`).set('Authorization', 'Bearer f')
+      tokenRes.should.have.status(200)
+      const token = tokenRes.body.token
+      const file2upload = path.resolve(path.join(__dirname, '../../README.md'))
+      return doUpload(file2upload, p2.filename, token, g)
+    })
     //
     it('must not create a new item without auth', async () => {
       const res = await r.post(`/`).send(p)
@@ -54,7 +64,7 @@ module.exports = (g) => {
     it('shall update filname withsubpath', async () => {
       const res = await r.post(`/`).send(p2).set('Authorization', 'Bearer f')
       res.should.have.status(201)
-      const res2 = await r.put(`/${p2.filename}`)
+      const res2 = await r.put(`/pokus/REAdMe2.md`)
         .send({ nazev: 'subpath' }).set('Authorization', 'Bearer f')
       res2.should.have.status(200)
     })

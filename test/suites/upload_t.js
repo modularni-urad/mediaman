@@ -23,7 +23,7 @@ module.exports = (g) => {
       const tokenRes = await r.get(`/acl/token`).set('Authorization', 'Bearer f')
       tokenRes.should.have.status(200)
       const token = tokenRes.body.token
-      const filename = '/pokus/README.md'
+      const filename = '/README.md'
       const file2upload = path.resolve(path.join(__dirname, '../../README.md'))
       await doUpload(file2upload, filename, token, g)
 
