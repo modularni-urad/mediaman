@@ -37,8 +37,15 @@ export default (ctx) => {
   }
   
   async function create (body, user, schema) {
-    const fileInfo = await getFileInfo(body, schema)
-    Object.assign(body, fileInfo, { owner: user.id })
+    try {
+      const fileInfo = await getFileInfo(body, schema)
+      Object.assign(body, fileInfo, { owner: user.id })
+    } catch (err) {
+      if (err.response && err.response.status === 404) {
+        throw new ErrorClass(404, `${err.config.url} not found in storage!`)
+      }
+      throw err
+    }    
     return entityMW.create(body, schema)
   }
 

@@ -69,5 +69,14 @@ module.exports = (g) => {
       res2.should.have.status(200)
     })
 
+    it('must not create record without existing file in storage', async () => {
+      const notExist = {
+        filename: `/notexists/pokus/REAdMe2.md`,
+        nazev: 'pok', tags: 'pok', popis: 'pok'
+      }
+      const res2 = await r.post('/').send(notExist).set('Authorization', 'Bearer f')
+      res2.should.have.status(404)
+    })
+
   })
 }
