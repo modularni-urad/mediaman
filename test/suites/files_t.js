@@ -62,7 +62,7 @@ module.exports = (g) => {
     })
 
     it('shall get approp filename', async () => {
-      const res = await r.get(encodeURI(`/filename/čoř_ič.md`))
+      const res = await r.get(encodeURI(`/filename/čoř ič.md`))
       res.should.have.status(200)
       res.text.should.eql('cor_ic.md')
     })

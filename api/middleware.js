@@ -37,7 +37,7 @@ export default (ctx) => {
   }
 
   function filename (filename) {
-    return removeDiacritics(filename)
+    return removeDiacritics(filename).replace(/\s/, '_')
   }
   
   async function create (body, user, schema) {
