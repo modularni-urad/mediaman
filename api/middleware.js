@@ -15,7 +15,7 @@ export default (ctx) => {
   const { knex, ErrorClass } = ctx
   const entityMW = entityMWBase(conf, knex, ErrorClass)
 
-  return { create, list, update }
+  return { create, list, update, filename }
 
   async function getFileInfo (body, schema) {
     const fileUrl = `${FILESTORAGE_URL}${schema || ''}/${body.filename}`
@@ -34,6 +34,10 @@ export default (ctx) => {
         size: dataReq.headers['content-length'] 
       }
     }
+  }
+
+  function filename (filename) {
+    return removeDiacritics(filename)
   }
   
   async function create (body, user, schema) {

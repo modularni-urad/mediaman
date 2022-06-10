@@ -61,6 +61,12 @@ module.exports = (g) => {
       res.should.have.status(200)
     })
 
+    it('shall get approp filename', async () => {
+      const res = await r.get(encodeURI(`/filename/čoř_ič.md`))
+      res.should.have.status(200)
+      res.text.should.eql('cor_ic.md')
+    })
+
     it('shall update filname withsubpath', async () => {
       const res = await r.post(`/`).send(p2).set('Authorization', 'Bearer f')
       res.should.have.status(201)

@@ -9,6 +9,10 @@ export default function (ctx) {
 
   app.use('/acl', ACLRoutes(ctx))
 
+  app.get('/filename/:filename', (req, res, next) => {
+    res.send(MW.filename(req.params.filename))
+  })
+
   app.get('/', (req, res, next) => {
     req.query.filter = req.query.filter ? JSON.parse(req.query.filter) : {}
     MW.list(req.query, req.tenantid).then(result => {
